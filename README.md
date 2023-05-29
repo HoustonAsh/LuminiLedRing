@@ -1,69 +1,38 @@
-# CF-MH201 Card Reader
+# Lumini Led Ring 1 inch
 
 ## Usage
 
-### With SoftwareSerial
-
 ```cpp
+#define LUMINI_DATA_PIN 18
+#define LUMINI_CLK_PIN 19
 #include <Arduino.h>
-#include "CardReader.h"
+#include "LuminiLedRing.h"
+#include "LuminiLedRingContext.h"
 
-void readenCard(const uint8_t* cardUID) {
-  Serial.print("CARD IS READEN: ");
-  Serial.print(cardUID[0], HEX); Serial.print(" ");
-  Serial.print(cardUID[1], HEX); Serial.print(" ");
-  Serial.print(cardUID[2], HEX); Serial.print(" ");
-  Serial.print(cardUID[3], HEX); Serial.print("\n");
-}
-
-CardReader cardReader(52, 53, readenCard);
+LuminiLedRingContext context;
+LuminiLedRing luminiLedRing;
 
 void setup() {
   Serial.begin(115200);
   Serial.println("READY!");
-  cardReader.setup();
+  luminiLedRing.setup(&context);
+
+  luminiLedRing.load(CRGB::HTMLColorCode::Aquamarine, 7000, 5);
 }
 
 void loop() {
-  cardReader.process();
+  int lSt = millis();
+  int lEnd = millis();
+  if (lEnd - lSt > 2) {
+    Serial.println((String)"SLOW FRAME: " + (lEnd - lSt));
+  }
+  context.loop();
 }
 ```
 
-Note: Manually specify package according your platform in your platformio.ini: 
-`featherfly/SoftwareSerial@1.0` or `plerup/EspSoftwareSerial@^8.0.1`
-
-### With HardwareSerial
-
-```cpp
-#define CARD_READER_HARDWARE_SERIAL Serial2
-
-#include <Arduino.h>
-#include "CardReader.h"
-
-void readenCard(const uint8_t* cardUID) {
-  Serial.print("CARD IS READEN: ");
-  Serial.print(cardUID[0], HEX); Serial.print(" ");
-  Serial.print(cardUID[1], HEX); Serial.print(" ");
-  Serial.print(cardUID[2], HEX); Serial.print(" ");
-  Serial.print(cardUID[3], HEX); Serial.print("\n");
-}
-
-CardReader cardReader(readenCard);
-
-void setup() {
-  Serial.begin(115200);
-  Serial.println("READY!");
-  cardReader.setup();
-}
-
-void loop() {
-  cardReader.process();
-}
-```
-
-Note: You can also define your serial in platformio.ini:
-```
+Note: You can also define your serial pins in platformio.ini:
+```ini
 build_flags =
-    -D CARD_READER_HARDWARE_SERIAL=Serial3
+    -D LUMINI_DATA_PIN=18
+    -D LUMINI_CLK_PIN=19
 ```
-

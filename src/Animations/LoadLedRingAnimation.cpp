@@ -11,13 +11,13 @@
 void LoadLedRingAnimation::setup(uint32_t rgb, int32_t duration, uint8_t taleScale) {
   LedRingAnimation::setup();
   this->color = rgb;
-  this->duration = duration / ringSize;
+  this->durationStep = duration / ringSize;
   this->taleScale = taleScale;
 }
 
 void LoadLedRingAnimation::process() {
   long int now = millis();
-  if (now - startAnimation < duration) return;
+  if (now - startAnimation < durationStep) return;
   startAnimation = now;
   ring[it] = color;
   if (++it == ringSize) it = 0;

@@ -16,7 +16,7 @@ class LedRingAnimation {
 protected:
   int64_t startAnimation;
   bool finished;
-  int32_t duration;
+  int32_t durationStep;
   int32_t updateInterval;
 public:
   String name;
